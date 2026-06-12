@@ -1,0 +1,21 @@
+:root {
+  /* Medical Theme Colors */
+  --color-primary: #106ebe;      /* Doctor-trusted blue */
+  --color-success: #107c41;      /* Active / Checked-in patient */
+  --color-warning: #fde7e9;      /* Pending state / Alert */
+  --color-text-main: #323130;    /* Dark gray for readability */
+  --color-bg-light: #f3f2f1;     /* Soft background layout */
+  --color-border: #edebe9;
+  
+  /* Typography & Radius */
+  --font-family: 'Segoe UI', Roboto, sans-serif;
+  --radius-md: 6px;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background-color: var(--color-bg-light);
+  color: var(--color-text-main);
+}
