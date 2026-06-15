@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../../../store';
-import { createBackendPatient, createPatientAppointment, fetchPatients, fetchAppointmentsByDate } from '../../../store/medicalSlice';
+import { createBackendPatient, createPatientAppointment, fetchPatients, fetchAppointmentsByDate, setAppointmentDate } from '../../../store/medicalSlice';
 import type { Patient } from '../../../types/medical';
 import { Button } from '../../../components/Button';
+import { ScrollableDateSelector } from '../../../components/ScrollableDateSelector';
 
 interface CheckInModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
 
   // Pull existing records from the shared Redux store slice
   const existingPatients = useSelector((state: RootState) => state.medical.patients);
+  const appointmentDate = useSelector((state: RootState) => state.medical.appointmentDate);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
@@ -133,9 +135,9 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
         alert("Please select or register a patient first.");
         return;
       }
-      let appointmentDate = new Date()
-        .toISOString()
-        .split('T')[0]
+      // let appointmentDate = new Date()
+      //   .toISOString()
+      //   .split('T')[0]
 
       await dispatch(
         createPatientAppointment({
@@ -257,6 +259,11 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
               </div>
             </div>
           )}
+
+          {/* INSERT COMPONENT: Injected date picker between patient choice and visit config blocks */}
+          <div className="pt-2 border-t border-slate-100">
+            <ScrollableDateSelector selectedDate={appointmentDate} onDateChange={(date) => {dispatch(setAppointmentDate(date));}} />
+          </div>
 
           {/* Section 3: Shared Queue Fields (Applies to both) */}
           <div className="pt-2 border-t border-slate-100">

@@ -4,14 +4,16 @@ import type { RootState, AppDispatch } from '../../store';
 import type { Appointment } from '../../types/medical';
 import { MetricCard } from '../../components/Card';
 import { Button } from '../../components/Button';
+import { ScrollableDateSelector } from '../../components/ScrollableDateSelector';
 import { CheckInModal } from './Components/CheckInModal';
-import { fetchAppointmentsByDate } from '../../store/medicalSlice';
+import { fetchAppointmentsByDate, setAppointmentDate } from '../../store/medicalSlice';
 
 
 export const QueueDashboard: React.FC = () => {
   // Sync core data straight from the global store
   const dispatch = useDispatch<AppDispatch>()
   const appointments = useSelector((state: RootState) => state.medical.appointments);
+  const appointmentDate = useSelector((state: RootState) => state.medical.appointmentDate);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getStatusColor = (status: Appointment['status']) => {
@@ -24,9 +26,9 @@ export const QueueDashboard: React.FC = () => {
   };
 
   useEffect(() => {
-      dispatch(fetchAppointmentsByDate('2026-06-11'));
-      console.log("patients after use effect", appointments);
-    }, [dispatch]);
+    dispatch(fetchAppointmentsByDate(appointmentDate));
+    console.log("patients after use effect", appointments);
+  }, [dispatch, appointmentDate]);
 
   return (
     <div className="space-y-6">
@@ -56,6 +58,17 @@ export const QueueDashboard: React.FC = () => {
           badgeText="Synced"
           badgeType="success"
         />
+      </div>
+      {/* <div className="border-t border-slate-200">
+        shakil Ahmad
+      </div> */}
+      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <ScrollableDateSelector
+          selectedDate={appointmentDate}
+          onDateChange={(date) => {
+            dispatch(setAppointmentDate(date));
+          }}
+          daysToSpread={14} />
       </div>
 
       {/* Patient Queue Matrix */}

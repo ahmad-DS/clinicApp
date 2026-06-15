@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/tool
 import type { Patient, Appointment } from '../types/medical';
 
 const API_BASE_URL = 'http://localhost:5000/api'; // Adjust to your server port
+// const API_BASE_URL = 'https://clinicapp-0hoi.onrender.com/api'; 
 
 // --- ASYNC THUNKS FOR BACKEND API COMMUNICATION ---
 
@@ -148,6 +149,7 @@ interface MedicalState {
   historyLoading: boolean;
   loading: boolean;
   error: string | null;
+  appointmentDate: string;
 }
 
 const initialState: MedicalState = {
@@ -160,6 +162,7 @@ const initialState: MedicalState = {
   ],
   cases: [], // Empty repository to start
   historyLoading: false,
+  appointmentDate: new Date().toISOString().split('T')[0],
   loading: false,
   error: null
 
@@ -169,6 +172,9 @@ export const medicalSlice = createSlice({
   name: 'medical',
   initialState,
   reducers: {
+    setAppointmentDate: (state, action: PayloadAction<string>) => {
+      state.appointmentDate = action.payload;
+    },
     addAppointment: (state, action: PayloadAction<Omit<Appointment, 'id' | 'tokenNumber'>>) => {
       const nextToken = state.appointments.length > 0 ? Math.max(...state.appointments.map(a => a.tokenNumber)) + 1 : 101;
       const newApt: Appointment = { ...action.payload, id: `apt-${Date.now()}`, tokenNumber: nextToken };
@@ -266,5 +272,5 @@ export const medicalSlice = createSlice({
   }
 });
 
-export const { addAppointment, savePatientCase } = medicalSlice.actions;
+export const { addAppointment, savePatientCase, setAppointmentDate } = medicalSlice.actions;
 export default medicalSlice.reducer;
