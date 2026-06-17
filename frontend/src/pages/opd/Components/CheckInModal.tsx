@@ -210,7 +210,7 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
                 onClick={handleInitiateNewPatient}
                 className="p-3 text-xs text-center text-indigo-600 font-medium hover:bg-indigo-50 cursor-pointer border-t border-dashed border-indigo-200 bg-indigo-50/30"
               >
-                + No Record Found. Create New File for "{searchQuery}"
+                + No Record Found. Create New Patient for "{searchQuery}"
               </div>
             </div>
           )}
