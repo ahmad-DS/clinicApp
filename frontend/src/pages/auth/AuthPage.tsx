@@ -15,7 +15,7 @@ export const AuthPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [role, setRole] = useState('Doctor');
+  // const [role, setRole] = useState('Doctor');
 
   // Watch for changes in loggedIn global state to trigger router redirect shifts
   useEffect(() => {

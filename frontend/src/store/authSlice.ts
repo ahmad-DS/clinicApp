@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 
 const API_BASE_URL = 'http://localhost:5000/api'; // Adjust to your server port
@@ -47,7 +47,7 @@ export const authSlice = createSlice({
             .addCase(loginUser.pending, (state) => {
                 state.loading = false;
             })
-            .addCase(loginUser.fulfilled, (state, action: PayloadAction<{ success: boolean }>) => {
+            .addCase(loginUser.fulfilled, (state) => {
                 state.loginError = null;
                 state.loggedIn = true;
             })
