@@ -2,11 +2,13 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { QueueDashboard } from './pages/opd/QueueDashboard';
 import { PatientDirectory } from './pages/patients/PatientDirectory'; // Import here
+import { AuthPage } from './pages/auth/AuthPage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<AuthPage/>} />
         <Route path="/" element={<DashboardLayout />}>
           <Route index element={<Navigate to="/opd" replace />} />
           <Route path="opd" element={<QueueDashboard />} />
