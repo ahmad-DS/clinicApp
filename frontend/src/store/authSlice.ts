@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 
-const API_BASE_URL = 'http://localhost:5000/api'; // Adjust to your server port
-// const API_BASE_URL = 'https://clinicapp-0hoi.onrender.com/api'; 
+// const API_BASE_URL = 'http://localhost:5000/api'; // Adjust to your server port
+const API_BASE_URL = 'https://clinicapp-0hoi.onrender.com/api'; 
 
 interface UserLoginPayload {
     email: string;
