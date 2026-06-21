@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import type { Patient, Appointment } from '../types/medical';
 
-const API_BASE_URL = 'http://localhost:5000/api'; // Adjust to your server port
-// const API_BASE_URL = 'https://clinicapp-0hoi.onrender.com/api'; 
+// const API_BASE_URL = 'http://localhost:5000/api'; // Adjust to your server port
+const API_BASE_URL = 'https://clinicapp-0hoi.onrender.com/api'; 
 
 // --- ASYNC THUNKS FOR BACKEND API COMMUNICATION ---
 
@@ -10,7 +10,9 @@ const API_BASE_URL = 'http://localhost:5000/api'; // Adjust to your server port
 export const fetchPatients = createAsyncThunk(
   'medical/fetchPatients',
   async (searchQuery: string = '') => {
-    const response = await fetch(`${API_BASE_URL}/patients?query=${encodeURIComponent(searchQuery)}`);
+    const response = await fetch(`${API_BASE_URL}/patients?query=${encodeURIComponent(searchQuery)}`, {
+      credentials: 'include'
+    });
     if (!response.ok) throw new Error('Failed to fetch patient data directory');
     const { patients } = await response.json();
 
@@ -42,7 +44,8 @@ export const createBackendPatient = createAsyncThunk(
     const response = await fetch(`${API_BASE_URL}/patients`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(backendPayload)
+      body: JSON.stringify(backendPayload),
+      credentials: 'include'
     });
 
     if (!response.ok) throw new Error('Server registration failed');
@@ -63,7 +66,9 @@ export const createBackendPatient = createAsyncThunk(
 export const fetchAppointmentsByDate = createAsyncThunk(
   'medical/fetchAppointmentsByDate',
   async (date: string = "") => {
-    const response = await fetch(`${API_BASE_URL}/appointments?date=${date}`);
+    const response = await fetch(`${API_BASE_URL}/appointments?date=${date}`, {
+      credentials: 'include'
+    });
     if (!response.ok) throw new Error('Failed to fetch appointments');
     const { queue_count, queue } = await response.json();
     console.log("queue count", queue_count)
@@ -89,7 +94,8 @@ export const createPatientAppointment = createAsyncThunk(
     const response = await fetch(`${API_BASE_URL}/appointments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      credentials: 'include'
     })
 
     if (!response.ok) throw new Error('Create appointment failed');
@@ -101,7 +107,9 @@ export const createPatientAppointment = createAsyncThunk(
 export const fetchPatientHistory = createAsyncThunk(
   'medical/fetchPatientHistory',
   async (patientId: string) => {
-    const response = await fetch(`${API_BASE_URL}/patients/${patientId}/history`);
+    const response = await fetch(`${API_BASE_URL}/patients/${patientId}/history`, {
+      credentials: 'include'
+    });
 
     if (!response.ok) throw new Error('Fetch patient history failed');
     const { history } = await response.json();
@@ -123,7 +131,8 @@ export const savePatientHistory = createAsyncThunk(
     // Matches: router.post('/:patient_id/history', addMedicalHistory) or your equivalent route
     const response = await fetch(`${API_BASE_URL}/patients/${patientId}/history`, {
       method: 'POST',
-      body: formData // CRITICAL: Do NOT set Content-Type header manually when passing FormData; the browser sets boundary specs automatically
+      body: formData, // CRITICAL: Do NOT set Content-Type header manually when passing FormData; the browser sets boundary specs automatically
+      credentials: 'include'
     });
 
     if (!response.ok) throw new Error('Failed to synchronize history records to Supabase instance');
