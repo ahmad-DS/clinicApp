@@ -30,14 +30,6 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-//auth routes
-app.post('/api/auth/login', login);
-
-app.use(authenticate); // Apply authentication middleware globally for all routes below
-app.use('/api/patients', patientRoutes);
-app.use('/api/appointments', authenticate, appointmentRoutes);
-app.use('/api/patients', historyRoutes); // Mount History Routes under patients path
-
 // Health Check Route to test Supabase connection
 app.get('/health', async (req: Request, res: Response) => {
   try {
@@ -58,6 +50,14 @@ app.get('/health', async (req: Request, res: Response) => {
     });
   }
 });
+
+//auth routes
+app.post('/api/auth/login', login);
+
+app.use(authenticate); // Apply authentication middleware globally for all routes below
+app.use('/api/patients', patientRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/patients', historyRoutes); // Mount History Routes under patients path
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
