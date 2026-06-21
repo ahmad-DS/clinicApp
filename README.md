@@ -34,22 +34,6 @@ Runtime: Node.js + Express.
 
 Database Integration: Supabase (PostgreSQL client communication layer).
 
-Security Layers: bcryptjs for secure local password hashing and jsonwebtoken (JWT) managing session verification cookies.
-
-📂 Key File Architecture
-src/
-├── components/          # Re-usable atomic components (Buttons, Cards, Inputs)
-├── layouts/             # Master app shells (DashboardLayout with navigation panel)
-├── pages/
-│   ├── auth/            # AuthPage.tsx (Integrated Sign-in / Sign-up views)
-│   ├── opd/             # QueueDashboard.tsx, OpenCaseView.tsx (Clinical space)
-│   └── patients/        # PatientDirectory.tsx (MPI registry and debounced search)
-├── store/               # Redux Toolkit centralized store configuration
-│   ├── index.ts         # Global root state bindings
-│   └── medicalSlice.ts  # Patient thunks, queue registries, and data reducers
-├── types/               # TypeScript data schemas and interface models
-└── App.tsx              # Application routing core with ProtectedRoute guards
-
 ⚙️ How to Run the Project Locally
 1. Prerequisite Installations
 Ensure you have Node.js installed on your system.
