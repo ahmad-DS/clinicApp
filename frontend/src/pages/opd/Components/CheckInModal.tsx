@@ -65,51 +65,6 @@ export const CheckInModal: React.FC<CheckInModalProps> = ({ isOpen, onClose }) =
     setVisitType('Walk-in');
   };
 
-  // const handleSubmit1 = (e: React.FormEvent) => {
-  //   e.preventDefault();
-
-  //   let patientData: Patient;
-
-  //   if (isNewPatient) {
-  //     // Create properties for a brand-new patient
-  //     const newPatientId = `p-${Date.now()}`;
-  //     const generatedUhid = `UHID-${Math.floor(100000 + Math.random() * 900000)}`;
-
-  //     patientData = {
-  //       id: newPatientId,
-  //       uhid: generatedUhid,
-  //       name: newName,
-  //       age: Number(newAge),
-  //       gender: newGender,
-  //       phone: newPhone
-  //     };
-
-  //     // 1. Commit the patient structure to the permanent master patient registry
-  //     dispatch(createBackendPatient({
-  //       name: newName,
-  //       age: Number(newAge),
-  //       gender: newGender,
-  //       phone: newPhone
-  //     }));
-  //   } else if (selectedPatient) {
-  //     // Use existing verified user database object
-  //     patientData = selectedPatient;
-  //   } else {
-  //     return alert("Please select or register a patient first.");
-  //   }
-
-  //   // 2. Dispatch data matrix up to the main live OPD stream queue list
-  //   dispatch(addAppointment({
-  //     patient: patientData,
-  //     appointmentTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-  //     status: 'Waiting',
-  //     visitType: visitType
-  //   }));
-
-  //   // Reset workflow fields and exit modal canvas
-  //   resetFormState();
-  //   onClose();
-  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
