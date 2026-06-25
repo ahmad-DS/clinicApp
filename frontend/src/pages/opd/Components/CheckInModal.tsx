@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../../../store';
-import { createBackendPatient, createPatientAppointment, fetchPatients, fetchAppointmentsByDate, setAppointmentDate } from '../../../store/medicalSlice';
-import type { Patient } from '../../../types/medical';
+import { createBackendPatient, createPatientAppointment, fetchPatients, fetchAppointmentsByDate } from '../../../rtk/medical/medicalThunks';
+import { setAppointmentDate } from '../../../rtk/medical/medicalSlice';
+import type { Patient } from '../../../rtk/medical/medicalTypes';
 import { Button } from '../../../components/Button';
 import { ScrollableDateSelector } from '../../../components/ScrollableDateSelector';
 

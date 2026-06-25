@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import type { RootState, AppDispatch } from '../../store';
-import { fetchPatients, createBackendPatient } from '../../store/medicalSlice';
-import type { Patient } from '../../types/medical';
+import { fetchPatients, createBackendPatient } from '../../rtk/medical/medicalThunks';
 import { MetricCard } from '../../components/Card';
 import { Button } from '../../components/Button';
-import { OpenCaseView } from '../opd/OpenCaseView';
 
 export const PatientDirectory: React.FC = () => {
+  const navigate = useNavigate(); // <-- Initialize navigate
   const dispatch = useDispatch<AppDispatch>();
   
   const { patients, loading, error } = useSelector((state: RootState) => state.medical);
 
   // Local state for tracking what the user types in real-time
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Controls navigation depth into active clinical checkup frames
-  const [activeCasePatient, setActiveCasePatient] = useState<Patient | null>(null);
   
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState('');
@@ -47,15 +44,6 @@ export const PatientDirectory: React.FC = () => {
   
   // Handle layout loading errors safely without completely breaking the outer application frame
   if (error) return <div className="p-8 text-center text-xs font-semibold text-red-600 bg-red-50 rounded-lg">{error}</div>;
-
-  if (activeCasePatient) {
-    return (
-      <OpenCaseView 
-        patient={activeCasePatient} 
-        onBack={() => setActiveCasePatient(null)} 
-      />
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -171,8 +159,9 @@ export const PatientDirectory: React.FC = () => {
                       <td className="py-4 px-6">{patient.gender}, {patient.age} Yrs</td>
                       <td className="py-4 px-6 text-slate-500">{patient.phone}</td>
                       <td className="py-4 px-6 text-right">
-                        <button 
-                          onClick={() => setActiveCasePatient(patient)}
+                        <button
+                          onClick={() => navigate(`/patients/${patient.id}`)}
+                          // onClick={() => setActiveCasePatient(patient)}
                           className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-sm"
                         >
                           Open Case

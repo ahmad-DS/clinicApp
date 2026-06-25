@@ -1,23 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../../store';
-import { fetchPatientHistory, savePatientHistory } from '../../rtk/medical/medicalThunks';
-import type { Patient } from '../../rtk/medical/medicalTypes';
+import { fetchPatientHistory, savePatientHistory, fetchPatientById } from '../../rtk/medical/medicalThunks';
 import { Button } from '../../components/Button';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
-interface OpenCaseViewProps {
-  patient: Patient;
-  onBack: () => void;
-}
+// interface OpenCaseViewProps {
+//   patient: Patient;
+//   onBack: () => void;
+// }
 
-export const OpenCaseView: React.FC<OpenCaseViewProps> = ({ patient, onBack }) => {
+export const PatientProfile: React.FC = () => {
+  const { patientId } = useParams<{ patientId: string }>(); // <-- Get ID from URL
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   
+  // Find the specific patient data out of the state registry array
+  // const patient = useSelector((state: RootState) => 
+  //   state.medical.currentPatient
+  // );
+  
   // Extract all historical cases tied to this specific patient from Redux
-  const pastMedicalHistory = useSelector((state: RootState) => 
-    state.medical.cases
-  );
+  // const pastMedicalHistory = useSelector((state: RootState) => 
+  //   state.medical.cases
+  // );
+  const { currentPatient: patient, cases: pastMedicalHistory } = useSelector((state: RootState) => state.medical);
+  console.log("current patient", patient);
   // const loading = useSelector((state: RootState) => state.medical.historyLoading);
   console.log("past medical history", pastMedicalHistory)
 
@@ -29,8 +38,21 @@ export const OpenCaseView: React.FC<OpenCaseViewProps> = ({ patient, onBack }) =
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
   useEffect(() => {
-    dispatch(fetchPatientHistory(patient.id))
-  }, [dispatch, patient.id])
+    if (patientId) {
+      dispatch(fetchPatientById(patientId)); // Fetch patient details by ID
+      dispatch(fetchPatientHistory(patientId));
+    }
+  }, [dispatch, patientId]);
+
+  // Fallback UI safety if a doctor enters a completely bogus ID manually in the address bar
+  if (!patient) {
+    return (
+      <div className="p-8 text-center bg-white rounded-xl border border-slate-200">
+        <p className="text-sm text-slate-500 font-medium mb-3">Medical record file not found.</p>
+        <Button variant="secondary" onClick={() => navigate('/patients')}>Return to Directory</Button>
+      </div>
+    );
+  }
 
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +114,8 @@ export const OpenCaseView: React.FC<OpenCaseViewProps> = ({ patient, onBack }) =
       {/* Top Banner Frame */}
       <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
         <div className="flex items-center gap-4">
-          <button onClick={onBack} className="text-slate-400 hover:text-slate-600 font-bold text-sm">&larr; Back to Directory</button>
+          {/* CHANGED: Back button uses navigate string instead of a functional callback */}
+          <button onClick={() => navigate('/patients')} className="text-slate-400 hover:text-slate-600 font-bold text-sm">&larr; Back to Directory</button>
           <div className="h-6 w-[1px] bg-slate-200" />
           <div>
             <h3 className="font-bold text-slate-800 text-base">EMR Consultation Workspace</h3>
@@ -217,7 +240,7 @@ export const OpenCaseView: React.FC<OpenCaseViewProps> = ({ patient, onBack }) =
 
             {/* Submissions Execution Controls bar */}
             <div className="pt-4 border-t flex justify-end gap-3">
-              <Button type="button" variant="secondary" onClick={onBack}>Finish Consultation</Button>
+              <Button type="button" variant="secondary" onClick={() => navigate('/patients')}>Finish Consultation</Button>
               <Button type="submit" variant="success">Commit Entry to Patient File</Button>
             </div>
 

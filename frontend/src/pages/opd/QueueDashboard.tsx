@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../../store';
-import type { Appointment } from '../../types/medical';
+import type { Appointment } from '../../rtk/medical/medicalTypes';
 import { MetricCard } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { ScrollableDateSelector } from '../../components/ScrollableDateSelector';
 import { CheckInModal } from './Components/CheckInModal';
-import { fetchAppointmentsByDate, setAppointmentDate } from '../../store/medicalSlice';
+import { fetchAppointmentsByDate } from '../../rtk/medical/medicalThunks';
+import { setAppointmentDate } from '../../rtk/medical/medicalSlice';
 
 
 export const QueueDashboard: React.FC = () => {
@@ -103,7 +104,8 @@ export const QueueDashboard: React.FC = () => {
                   </td>
                   <td className="py-4 px-6 text-right">
                     <button
-                      className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-1.5 rounded-lg text-xs font-medium border border-indigo-100">
+                      className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-1.5 rounded-lg text-xs font-medium border border-indigo-100"
+                      >
                       Open Case
                     </button>
                   </td>

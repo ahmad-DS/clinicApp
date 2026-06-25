@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import medicalReducer from './medicalSlice';
-import authReducer from './authSlice';
+import medicalReducer from './rtk/medical/medicalSlice';
+import authReducer from './rtk/auth/authSlice';
 
 export const store = configureStore({
   reducer: {
