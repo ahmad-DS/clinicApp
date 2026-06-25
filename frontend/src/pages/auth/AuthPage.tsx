@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { RootState, AppDispatch } from '../../store';
-import { loginUser } from '../../store/authSlice'; // <-- Import your thunk action block
+import { loginUser } from '../../rtk/auth/authSlice'; // <-- Import your thunk action block
 
 export const AuthPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -42,7 +42,7 @@ export const AuthPage: React.FC = () => {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
       <div className="sm:mx-auto w-full max-w-md text-center">
         <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-          PulseFlow <span className="text-indigo-600">Healthcare OS</span>
+          WarshiHospitals <span className="text-indigo-600">Healthcare OS</span>
         </h2>
         <p className="mt-2 text-xs text-slate-500 uppercase tracking-wider font-semibold">
           Clinical Management & EMR Ecosystem

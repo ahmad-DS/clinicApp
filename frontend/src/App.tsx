@@ -3,7 +3,8 @@ import type { RootState } from './store';
 import { useSelector } from 'react-redux'
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { QueueDashboard } from './pages/opd/QueueDashboard';
-import { PatientDirectory } from './pages/patients/PatientDirectory'; // Import here
+import { PatientDirectory } from './pages/patients/PatientDirectory';
+import { PatientProfile } from './pages/patients/PatientProfile';
 import { AuthPage } from './pages/auth/AuthPage';
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
 
             {/* Mount the fully operational patient directory sheet component */}
             <Route path="patients" element={<PatientDirectory />} />
+            {/* 2. New Dynamic Patient Profile Route */}
+            <Route path="patients/:patientId" element={<PatientProfile />} />
 
             <Route path="prescriptions" element={<div className="p-4 text-slate-500">Prescription Archives</div>} />
             <Route path="billing" element={<div className="p-4 text-slate-500">Billing Ledger</div>} />
