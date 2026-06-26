@@ -68,3 +68,9 @@ export const login = async (
 
     res.json({ success: true });
 };
+
+export const checkAuth = async (req: Request, res: Response) => {
+    // If your 'authenticate' middleware succeeds, it means the cookie was valid
+    // and you likely attached the user to req.user
+    res.json({ authenticated: true, user: req.user });
+};
