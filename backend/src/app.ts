@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import patientRoutes from './routes/patient.routes';
 import appointmentRoutes from './routes/appointment.routes';
 import historyRoutes from './routes/history.routes'; // Add this import
-import { login } from './controllers/auth.controller';
+import authRoutes from './routes/auth.routes';
 import { supabase } from './config/supabase';
 import { authenticate } from './middleware/authenticate';
 
@@ -52,7 +52,7 @@ app.get('/health', async (req: Request, res: Response) => {
 });
 
 //auth routes
-app.post('/api/auth/login', login);
+app.use('/api/auth', authRoutes);
 
 app.use(authenticate); // Apply authentication middleware globally for all routes below
 app.use('/api/patients', patientRoutes);
