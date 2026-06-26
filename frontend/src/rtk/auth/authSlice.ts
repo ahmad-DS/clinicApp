@@ -23,6 +23,18 @@ export const loginUser = createAsyncThunk(
         const data = await response.json();
         return data;
     }
+);
+
+export const verifyUser = createAsyncThunk(
+    'auth/verifyUser',
+    async () => {
+        const response =  await fetch(`${API_BASE_URL}/auth/me`, {
+            credentials: "include"
+        });
+        if (!response.ok) throw new Error("Token does not exist or has expired");
+        const data = await response.json();
+        return data;
+    }
 )
 
 interface AuthState {
@@ -54,7 +66,19 @@ export const authSlice = createSlice({
             .addCase(loginUser.rejected, (state, action) => {
                 state.loginError = action.error.message || "User Login failed!";
                 state.loggedIn = false;
+            });
+        builder
+            .addCase(verifyUser.pending, (state) => {
+                state.loading = true;
             })
+            .addCase(verifyUser.fulfilled, (state) => {
+                state.loading = false;
+                state.loggedIn = true;
+            })
+            .addCase(verifyUser.rejected, (state) => {
+                state.loading = false;
+                state.loggedIn = false;
+            });
     },
 });
 
