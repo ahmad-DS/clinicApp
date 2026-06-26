@@ -20,28 +20,6 @@ export const login = async (
     }
     // res.json(data);
     console.log("before cookie");
-    // local set up
-    // res.cookie(
-    //     "access_token",
-    //     data.session.access_token,
-    //     {
-    //         httpOnly: true,
-    //         secure: false,
-    //         sameSite: "lax",
-    //         maxAge: 60 * 60 * 1000
-    //     }
-    // );
-
-    // res.cookie(
-    //     "refresh_token",
-    //     data.session.refresh_token,
-    //     {
-    //         httpOnly: true,
-    //         secure: false,
-    //         sameSite: "lax",
-    //         maxAge: 30 * 24 * 60 * 60 * 1000
-    //     }
-    // );
 
     //production set up
     res.cookie(
@@ -49,8 +27,8 @@ export const login = async (
         data.session.access_token,
         {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: process.env.COOKIE_SECURE === "true",
+            sameSite: process.env.COOKIE_SAMESITE as "lax" | "strict" | "none",
             maxAge: 60 * 60 * 1000,
         });
 
@@ -59,8 +37,8 @@ export const login = async (
         data.session.refresh_token,
         {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: process.env.COOKIE_SECURE === "true",
+            sameSite: process.env.COOKIE_SAMESITE as "lax" | "strict" | "none",
             maxAge: 30 * 24 * 60 * 60 * 1000,
         });
 

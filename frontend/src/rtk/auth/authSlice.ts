@@ -1,8 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-
-const API_BASE_URL = 'http://localhost:5000/api'; // Adjust to your server port
-// const API_BASE_URL = 'https://clinicapp-0hoi.onrender.com/api'; 
+import { API_BASE_URL } from "../../../src/config";
 
 interface UserLoginPayload {
     email: string;
@@ -12,7 +9,7 @@ interface UserLoginPayload {
 export const loginUser = createAsyncThunk(
     'auth/loginUser',
     async (payload: UserLoginPayload) => {
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -28,7 +25,7 @@ export const loginUser = createAsyncThunk(
 export const verifyUser = createAsyncThunk(
     'auth/verifyUser',
     async () => {
-        const response =  await fetch(`${API_BASE_URL}/auth/me`, {
+        const response =  await fetch(`${API_BASE_URL}/api/auth/me`, {
             credentials: "include"
         });
         if (!response.ok) throw new Error("Token does not exist or has expired");

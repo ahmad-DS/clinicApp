@@ -1,7 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { Patient, Appointment, PatientCase } from './medicalTypes'
-const API_BASE_URL = 'http://localhost:5000/api'; // Adjust to your server port
-// const API_BASE_URL = 'https://clinicapp-0hoi.onrender.com/api'; 
+import type { Patient, Appointment, PatientCase } from './medicalTypes';
+import { API_BASE_URL } from '../../../src/config';
 
 // --- ASYNC THUNKS FOR BACKEND API COMMUNICATION ---
 
@@ -9,7 +8,7 @@ const API_BASE_URL = 'http://localhost:5000/api'; // Adjust to your server port
 export const fetchPatients = createAsyncThunk(
   'medical/fetchPatients',
   async (searchQuery: string = '') => {
-    const response = await fetch(`${API_BASE_URL}/patients?query=${encodeURIComponent(searchQuery)}`, {
+    const response = await fetch(`${API_BASE_URL}/api/patients?query=${encodeURIComponent(searchQuery)}`, {
       credentials: 'include'
     });
     if (!response.ok) throw new Error('Failed to fetch patient data directory');
@@ -32,7 +31,7 @@ export const fetchPatients = createAsyncThunk(
 export const fetchPatientById = createAsyncThunk(
   'medical/fetchPatientById',
   async (patientId: string) => {
-    const response = await fetch(`${API_BASE_URL}/patients/${patientId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/patients/${patientId}`, {
       credentials: 'include'
     });
     if (!response.ok) throw new Error('Failed to fetch patient detail');
@@ -60,7 +59,7 @@ export const createBackendPatient = createAsyncThunk(
       phone: newPatientData.phone
     };
 
-    const response = await fetch(`${API_BASE_URL}/patients`, {
+    const response = await fetch(`${API_BASE_URL}/api/patients`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(backendPayload),
@@ -85,7 +84,7 @@ export const createBackendPatient = createAsyncThunk(
 export const fetchAppointmentsByDate = createAsyncThunk(
   'medical/fetchAppointmentsByDate',
   async (date: string = "") => {
-    const response = await fetch(`${API_BASE_URL}/appointments?date=${date}`, {
+    const response = await fetch(`${API_BASE_URL}/api/appointments?date=${date}`, {
       credentials: 'include'
     });
     if (!response.ok) throw new Error('Failed to fetch appointments');
@@ -110,7 +109,7 @@ export const createPatientAppointment = createAsyncThunk(
       patient_id: patientId,
       appointment_date: appointmentDate
     }
-    const response = await fetch(`${API_BASE_URL}/appointments`, {
+    const response = await fetch(`${API_BASE_URL}/api/appointments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -126,7 +125,7 @@ export const createPatientAppointment = createAsyncThunk(
 export const fetchPatientHistory = createAsyncThunk(
   'medical/fetchPatientHistory',
   async (patientId: string) => {
-    const response = await fetch(`${API_BASE_URL}/patients/${patientId}/history`, {
+    const response = await fetch(`${API_BASE_URL}/api/patients/${patientId}/history`, {
       credentials: 'include'
     });
 
@@ -147,7 +146,7 @@ export const savePatientHistory = createAsyncThunk(
   'medical/savePatientHistory',
   async ({ patientId, formData }: { patientId: string; formData: FormData }) => {
     // Matches: router.post('/:patient_id/history', addMedicalHistory) or your equivalent route
-    const response = await fetch(`${API_BASE_URL}/patients/${patientId}/history`, {
+    const response = await fetch(`${API_BASE_URL}/api/patients/${patientId}/history`, {
       method: 'POST',
       body: formData, // CRITICAL: Do NOT set Content-Type header manually when passing FormData; the browser sets boundary specs automatically
       credentials: 'include'
