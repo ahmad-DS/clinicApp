@@ -39,7 +39,7 @@ function App() {
             {/* Mount the fully operational patient directory sheet component */}
             <Route path="patients" element={<PatientDirectory />} />
             {/* 2. New Dynamic Patient Profile Route */}
-            <Route path="patients/:patientId" element={<PatientProfile />} />
+            <Route path="patients/:patientId/:redirectId" element={<PatientProfile />} />
 
             <Route path="prescriptions" element={<div className="p-4 text-slate-500">Prescription Archives</div>} />
             <Route path="billing" element={<div className="p-4 text-slate-500">Billing Ledger</div>} />

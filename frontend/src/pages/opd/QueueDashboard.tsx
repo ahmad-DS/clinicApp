@@ -8,6 +8,7 @@ import { ScrollableDateSelector } from '../../components/ScrollableDateSelector'
 import { CheckInModal } from './Components/CheckInModal';
 import { fetchAppointmentsByDate } from '../../rtk/medical/medicalThunks';
 import { setAppointmentDate } from '../../rtk/medical/medicalSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 export const QueueDashboard: React.FC = () => {
@@ -26,6 +27,12 @@ export const QueueDashboard: React.FC = () => {
     }
   };
 
+  const navigate = useNavigate()
+  // const patientID = dispatch
+
+  // const handleNavigate = ()=>{
+  //   navigate(`/patient/${patientID}`)
+  // }
   useEffect(() => {
     dispatch(fetchAppointmentsByDate(appointmentDate));
     console.log("patients after use effect", appointments);
@@ -104,6 +111,7 @@ export const QueueDashboard: React.FC = () => {
                   </td>
                   <td className="py-4 px-6 text-right">
                     <button
+                      onClick={()=>{navigate(`/patients/${appointment.patient.id}/opd`)}}
                       className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-1.5 rounded-lg text-xs font-medium border border-indigo-100"
                       >
                       Open Case

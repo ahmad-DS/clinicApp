@@ -160,7 +160,7 @@ export const PatientDirectory: React.FC = () => {
                       <td className="py-4 px-6 text-slate-500">{patient.phone}</td>
                       <td className="py-4 px-6 text-right">
                         <button
-                          onClick={() => navigate(`/patients/${patient.id}`)}
+                          onClick={() => navigate(`/patients/${patient.id}/patients`)}
                           // onClick={() => setActiveCasePatient(patient)}
                           className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-sm"
                         >

@@ -12,7 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 // }
 
 export const PatientProfile: React.FC = () => {
-  const { patientId } = useParams<{ patientId: string }>(); // <-- Get ID from URL
+  const { patientId , redirectId} = useParams<{ patientId: string , redirectId ? :string}>(); // <-- Get ID from URL
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   
@@ -115,7 +115,7 @@ export const PatientProfile: React.FC = () => {
       <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
         <div className="flex items-center gap-4">
           {/* CHANGED: Back button uses navigate string instead of a functional callback */}
-          <button onClick={() => navigate('/patients')} className="text-slate-400 hover:text-slate-600 font-bold text-sm">&larr; Back to Directory</button>
+          <button onClick={() => navigate(`/${redirectId}`)} className="text-slate-400 hover:text-slate-600 font-bold text-sm">&larr; Back to Directory</button>
           <div className="h-6 w-[1px] bg-slate-200" />
           <div>
             <h3 className="font-bold text-slate-800 text-base">EMR Consultation Workspace</h3>
