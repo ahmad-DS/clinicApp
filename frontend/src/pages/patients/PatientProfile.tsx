@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../../store';
 import { fetchPatientHistory, savePatientHistory, fetchPatientById } from '../../rtk/medical/medicalThunks';
 import { Button } from '../../components/Button';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams , useLocation} from 'react-router-dom';
 
 
 // interface OpenCaseViewProps {
@@ -12,7 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 // }
 
 export const PatientProfile: React.FC = () => {
-  const { patientId } = useParams<{ patientId: string }>(); // <-- Get ID from URL
+  const { patientId , redirectFrom } = useParams<{ patientId: string , redirectFrom?:string }>(); // <-- Get ID from URL
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   
@@ -109,13 +109,17 @@ export const PatientProfile: React.FC = () => {
     }
   };
 
+  // use useLocation for remember that the request come from which route 
+  let location = useLocation()
+  const redirectTo = location.state?.redirectTo || "/patients";
+
   return (
     <div className="space-y-6">
       {/* Top Banner Frame */}
       <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
         <div className="flex items-center gap-4">
           {/* CHANGED: Back button uses navigate string instead of a functional callback */}
-          <button onClick={() => navigate('/patients')} className="text-slate-400 hover:text-slate-600 font-bold text-sm">&larr; Back to Directory</button>
+          <button onClick={() => navigate(`/${redirectTo}`)} className="text-slate-400 hover:text-slate-600 font-bold text-sm">&larr; Back to Directory</button>
           <div className="h-6 w-[1px] bg-slate-200" />
           <div>
             <h3 className="font-bold text-slate-800 text-base">EMR Consultation Workspace</h3>
