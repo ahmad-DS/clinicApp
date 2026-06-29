@@ -8,6 +8,7 @@ import { ScrollableDateSelector } from '../../components/ScrollableDateSelector'
 import { CheckInModal } from './Components/CheckInModal';
 import { fetchAppointmentsByDate } from '../../rtk/medical/medicalThunks';
 import { setAppointmentDate } from '../../rtk/medical/medicalSlice';
+import { useNavigate , useLocation } from 'react-router-dom';
 
 
 export const QueueDashboard: React.FC = () => {
@@ -16,7 +17,7 @@ export const QueueDashboard: React.FC = () => {
   const appointments = useSelector((state: RootState) => state.medical.appointments);
   const appointmentDate = useSelector((state: RootState) => state.medical.appointmentDate);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  
   const getStatusColor = (status: Appointment['status']) => {
     switch (status) {
       case 'Waiting': return 'bg-amber-100 text-amber-800 border-amber-200';
@@ -25,12 +26,17 @@ export const QueueDashboard: React.FC = () => {
       default: return 'bg-slate-100 text-slate-800 border-slate-200';
     }
   };
-
+  
   useEffect(() => {
     dispatch(fetchAppointmentsByDate(appointmentDate));
     console.log("patients after use effect", appointments);
   }, [dispatch, appointmentDate]);
+  
 
+  // use uselocation for remember route
+  let location = useLocation()
+  const navigate = useNavigate()
+  
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -58,7 +64,7 @@ export const QueueDashboard: React.FC = () => {
           value={appointments.filter(a => a.status === 'Completed').length}
           badgeText="Synced"
           badgeType="success"
-        />
+          />
       </div>
       {/* <div className="border-t border-slate-200">
         shakil Ahmad
@@ -103,7 +109,11 @@ export const QueueDashboard: React.FC = () => {
                     </span>
                   </td>
                   <td className="py-4 px-6 text-right">
-                    <button
+                    <button onClick={()=>{navigate(`/patients/${appointment.patient.id}`, {
+                      state: {
+                        redirectTo: location.pathname,
+                      },
+                    })}}
                       className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-1.5 rounded-lg text-xs font-medium border border-indigo-100"
                       >
                       Open Case
