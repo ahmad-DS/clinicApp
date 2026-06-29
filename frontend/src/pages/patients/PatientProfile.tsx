@@ -12,7 +12,7 @@ import { useNavigate, useParams , useLocation} from 'react-router-dom';
 // }
 
 export const PatientProfile: React.FC = () => {
-  const { patientId , redirectFrom } = useParams<{ patientId: string , redirectFrom?:string }>(); // <-- Get ID from URL
+  const { patientId} = useParams<{ patientId: string }>(); // <-- Get ID from URL
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   
