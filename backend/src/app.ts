@@ -6,7 +6,7 @@ import patientRoutes from './routes/patient.routes';
 import appointmentRoutes from './routes/appointment.routes';
 import historyRoutes from './routes/history.routes'; // Add this import
 import authRoutes from './routes/auth.routes';
-import { supabase } from './config/supabase';
+import { supabaseAdmin } from './config/supabase';
 import { authenticate } from './middleware/authenticate';
 
 dotenv.config();
@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.get('/health', async (req: Request, res: Response) => {
   try {
     // A quick, lightweight query to verify connection to Supabase
-    const { data, error } = await supabase.from('patients').select('id').limit(1);
+    const { data, error } = await supabaseAdmin.from('patients').select('id').limit(1);
 
     if (error) throw error;
 

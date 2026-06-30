@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { supabase } from "../config/supabase";
+import { supabaseAdmin } from "../config/supabase";
 
 export const authenticate = async (
   req: Request,
@@ -16,7 +16,7 @@ export const authenticate = async (
     }
 
     const { data, error } =
-      await supabase.auth.getUser(token);
+      await supabaseAdmin.auth.getUser(token);
 
     if (error || !data.user) {
       return res.status(401).json({
@@ -25,7 +25,7 @@ export const authenticate = async (
     }
 
     const { data: appUser, error: userError } =
-      await supabase
+      await supabaseAdmin
         .from("users")
         .select("role")
         .eq("id", data.user.id)

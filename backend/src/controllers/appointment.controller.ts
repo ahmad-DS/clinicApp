@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { supabase } from '../config/supabase';
+import { supabaseAdmin } from '../config/supabase';
 import { Appointment } from '../models/appointment.model';
 
 // 1. Book an OPD Appointment with Auto-Token Calculation
@@ -14,7 +14,7 @@ export const bookAppointment = async (req: Request, res: Response): Promise<void
     }
 
     // Check if the patient already has an appointment booked for this day
-    const { data: existingBooking, error: checkError } = await supabase
+    const { data: existingBooking, error: checkError } = await supabaseAdmin
       .from('appointments')
       .select('id')
       .eq('patient_id', patient_id)
@@ -28,7 +28,7 @@ export const bookAppointment = async (req: Request, res: Response): Promise<void
     }
 
     // Fetch the total count of existing appointments on that day to compute the token
-    const { count, error: countError } = await supabase
+    const { count, error: countError } = await supabaseAdmin
       .from('appointments')
       .select('*', { count: 'exact', head: true })
       .eq('appointment_date', appointment_date);
@@ -38,7 +38,7 @@ export const bookAppointment = async (req: Request, res: Response): Promise<void
     const nextTokenNumber = (count || 100) + 1;
 
     // Create the appointment record
-    const { data, error: insertError } = await supabase
+    const { data, error: insertError } = await supabaseAdmin
       .from('appointments')
       .insert([
         {
@@ -75,7 +75,7 @@ export const getAppointmentsByDate = async (req: Request, res: Response): Promis
     }
 
     // Use Supabase relations syntax to fetch appointment details AND parent patient records
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('appointments')
       .select(`
         id,

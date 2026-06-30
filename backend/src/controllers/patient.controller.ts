@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { supabase } from '../config/supabase';
+import { supabaseAdmin } from '../config/supabase';
 import { Patient } from '../models/patient.model';
 
 // 1. Register a new patient
@@ -12,7 +12,7 @@ export const createPatient = async (req: Request, res: Response): Promise<void> 
        return;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('patients')
       .insert([{ name, age, sex, phone }])
       .select()
@@ -33,7 +33,7 @@ export const searchPatients = async (req: Request, res: Response): Promise<void>
 
     if (!query) {
       // If no query parameter, return the latest 20 patients
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('patients')
         .select('*')
         .order('created_at', { ascending: false })
@@ -45,7 +45,7 @@ export const searchPatients = async (req: Request, res: Response): Promise<void>
     }
 
     // Search matching either name or phone number
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('patients')
       .select('*')
       .or(`name.ilike.%${query}%,phone.ilike.%${query}%`);
@@ -63,7 +63,7 @@ export const getPatientById = async (req: Request, res: Response): Promise<void>
   try {
     const { id } = req.params;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('patients')
       .select('*')
       .eq('id', id)
