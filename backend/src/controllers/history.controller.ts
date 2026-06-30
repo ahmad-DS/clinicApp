@@ -3,6 +3,9 @@ import { supabase } from '../config/supabase';
 import path from 'path';
 
 export const addMedicalHistory = async (req: Request, res: Response): Promise<void> => {
+  // Keep track of the historyId so we can delete it if storage fails midway
+  let createdHistoryId: string | null = null; 
+
   try {
     const { patient_id } = req.params;
     const { description } = req.body;
@@ -22,25 +25,28 @@ export const addMedicalHistory = async (req: Request, res: Response): Promise<vo
 
     if (historyError) throw historyError;
     
-    const historyId = historyRecord.id;
+    createdHistoryId = historyRecord.id;
     const uploadedImagesLog = [];
 
     // 2. Check if files are attached and handle the upload loop
     if (files && files.length > 0) {
       for (const file of files) {
-        // Generate a clean, unique file path name
-        const fileExtension = path.extname(file.originalname);
-        const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${fileExtension}`;
-        const filePath = `patients/${patient_id}/${historyId}/${fileName}`;
+        // 🔥 FIX: Clean and sanitize file extensions/names to bypass RLS metadata bugs completely
+        const rawExtension = path.extname(file.originalname).toLowerCase();
+        const fileExtension = rawExtension.replace(/[^.a-z0-9]/g, ''); // Drops special characters from extension
+        const uniqueId = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+        const fileName = `${uniqueId}${fileExtension}`;
+        
+        const filePath = `patients/${patient_id}/${createdHistoryId}/${fileName}`;
 
-        // Upload directly to the 'patient-records' bucket we made
+        // Upload directly to the 'patient-records' bucket using your Service Role Client
         const { error: uploadError } = await supabase.storage
           .from('patient-records')
           .upload(filePath, file.buffer, {
             contentType: file.mimetype,
             upsert: false
           });
-
+        console.log("uploadError", uploadError);
         if (uploadError) throw uploadError;
 
         // Retrieve the secure public URL for the uploaded file
@@ -53,7 +59,7 @@ export const addMedicalHistory = async (req: Request, res: Response): Promise<vo
         // Save the image public URL into the 'medical_images' table
         const { data: imageRecord, error: imgTableError } = await supabase
           .from('medical_images')
-          .insert([{ history_id: historyId, image_url: publicUrl }])
+          .insert([{ history_id: createdHistoryId, image_url: publicUrl }])
           .select()
           .single();
 
@@ -68,6 +74,14 @@ export const addMedicalHistory = async (req: Request, res: Response): Promise<vo
       images: uploadedImagesLog
     });
   } catch (error: any) {
+    // 🛡️ ROLLBACK STRATEGY: If something failed during storage upload, delete the orphan history entry
+    if (createdHistoryId) {
+      await supabase
+        .from('medical_histories')
+        .delete()
+        .eq('id', createdHistoryId);
+    }
+
     res.status(500).json({ error: error.message });
   }
 };
