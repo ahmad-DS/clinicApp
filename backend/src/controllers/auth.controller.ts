@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { supabase } from "../config/supabase";
+import { supabaseAdmin } from "../config/supabase";
 
 export const login = async (
     req: Request,
@@ -8,7 +8,7 @@ export const login = async (
     const { email, password } = req.body;
 
     const { data, error } =
-        await supabase.auth.signInWithPassword({
+        await supabaseAdmin.auth.signInWithPassword({
             email,
             password,
         });

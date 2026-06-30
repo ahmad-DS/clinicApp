@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_PUBLISHABLE_KEY;
+const supabasePublishableKey = process.env.SUPABASE_PUBLISHABLE_KEY;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY // we are using this because storage is throwing error without it
 
 if (!supabaseUrl || !supabaseServiceRoleKey) {
@@ -13,4 +13,17 @@ if (!supabaseUrl || !supabaseServiceRoleKey) {
 }
 
 // Initialize the Supabase client
-export const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+export const createUserClient = (accessToken: string) =>
+  createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_PUBLISHABLE_KEY!,
+    {
+      global: {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    }
+  );

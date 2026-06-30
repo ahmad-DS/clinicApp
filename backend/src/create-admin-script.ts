@@ -1,7 +1,7 @@
-import { supabase } from "./config/supabase";
+import { supabaseAdmin } from "./config/supabase";
 
 async function createAdmin() {
-  const { data, error } = await supabase.auth.admin.createUser({
+  const { data, error } = await supabaseAdmin.auth.admin.createUser({
     email: "admin@clinic.com",
     password: "Admin@123",
     email_confirm: true,
@@ -12,7 +12,7 @@ async function createAdmin() {
     return;
   }
 
-  await supabase
+  await supabaseAdmin
     .from("users")
     .insert({
       id: data.user.id,

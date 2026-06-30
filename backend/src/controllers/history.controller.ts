@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { supabase } from '../config/supabase';
+import { supabaseAdmin, createUserClient } from '../config/supabase';
 import path from 'path';
 
 export const addMedicalHistory = async (req: Request, res: Response): Promise<void> => {
@@ -17,7 +17,7 @@ export const addMedicalHistory = async (req: Request, res: Response): Promise<vo
     }
 
     // 1. Insert the text-based history entry into the database first
-    const { data: historyRecord, error: historyError } = await supabase
+    const { data: historyRecord, error: historyError } = await supabaseAdmin
       .from('medical_histories')
       .insert([{ patient_id, description }])
       .select()
@@ -39,8 +39,10 @@ export const addMedicalHistory = async (req: Request, res: Response): Promise<vo
         
         const filePath = `patients/${patient_id}/${createdHistoryId}/${fileName}`;
 
-        // Upload directly to the 'patient-records' bucket using your Service Role Client
-        const { error: uploadError } = await supabase.storage
+        // Use the user's access token to create a client for RLS compliance
+        const supabaseUser = createUserClient(req.cookies.access_token!);
+
+        const { error: uploadError } = await supabaseUser.storage
           .from('patient-records')
           .upload(filePath, file.buffer, {
             contentType: file.mimetype,
@@ -50,14 +52,14 @@ export const addMedicalHistory = async (req: Request, res: Response): Promise<vo
         if (uploadError) throw uploadError;
 
         // Retrieve the secure public URL for the uploaded file
-        const { data: urlData } = supabase.storage
+        const { data: urlData } = supabaseAdmin.storage
           .from('patient-records')
           .getPublicUrl(filePath);
 
         const publicUrl = urlData.publicUrl;
 
         // Save the image public URL into the 'medical_images' table
-        const { data: imageRecord, error: imgTableError } = await supabase
+        const { data: imageRecord, error: imgTableError } = await supabaseAdmin
           .from('medical_images')
           .insert([{ history_id: createdHistoryId, image_url: publicUrl }])
           .select()
@@ -76,7 +78,7 @@ export const addMedicalHistory = async (req: Request, res: Response): Promise<vo
   } catch (error: any) {
     // 🛡️ ROLLBACK STRATEGY: If something failed during storage upload, delete the orphan history entry
     if (createdHistoryId) {
-      await supabase
+      await supabaseAdmin
         .from('medical_histories')
         .delete()
         .eq('id', createdHistoryId);
@@ -92,7 +94,7 @@ export const getPatientMedicalHistory = async (req: Request, res: Response): Pro
     const { patient_id } = req.params;
 
     // 1. Verify if the patient exists first
-    const { data: patientExists, error: patientCheckError } = await supabase
+    const { data: patientExists, error: patientCheckError } = await supabaseAdmin
       .from('patients')
       .select('id')
       .eq('id', patient_id)
@@ -107,7 +109,7 @@ export const getPatientMedicalHistory = async (req: Request, res: Response): Pro
 
     // 2. Fetch all medical histories linked to this patient
     // The syntax 'medical_images(*)' tells Postgres to find all matching rows in medical_images
-    const { data: histories, error: historyError } = await supabase
+    const { data: histories, error: historyError } = await supabaseAdmin
       .from('medical_histories')
       .select(`
         id,
